@@ -7,6 +7,7 @@ float yp=0.2f;
 float vyp = 0.01f;
 float h=0.4f;
 
+bool close = false;
 bool upPressed = false;
 bool downPressed = false;
 
@@ -59,6 +60,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if(action == GLFW_PRESS) downPressed = true;
         if(action == GLFW_RELEASE) downPressed = false;
     }
+
+    if(key == GLFW_KEY_Q) {
+        close = true;   
+    }
 }
 
 int main() {
@@ -74,12 +79,12 @@ int main() {
     glewInit();
 
     float x = 0.0f, y = 0.0f;
-    float dx = -0.006f, dy =  0.004f;
+    float dx = -0.0045f, dy =  0.003f;
     float r = 0.07f;
 
-    int score=0;
+    int cp=0, cn=0;
     glfwSetKeyCallback(window, key_callback);
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window) && !close) {
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -100,13 +105,13 @@ int main() {
         bool hit = detectCollision(yp, x, y, r);
         if(hit) {
             dx = fabs(dx);
-            score++;
-            std::cout<< score<< std::endl;
+            cp++;
+            //std::cout<< score<< std::endl;
         }
         else if(x - r < -1.0f) {
             dx = fabs(dx);
-            score--;
-            std::cout<< score<< std::endl;
+            cn++;
+            //std::cout<< score<< std::endl;
         }
         if(x + r > 1.0f) dx = -fabs(dx);
         if(y + r > 1.0f || y - r < -1.0f) dy = -dy;
@@ -115,6 +120,7 @@ int main() {
         glfwPollEvents();
     }
     glfwTerminate();
-    std::cout<< "FINAL SCORE: "<< score<< std::endl;
+    std::cout<< cp<< " "<< -cn<< std::endl;
+    std::cout<< "FINAL SCORE: "<< cp-cn<< std::endl;
     return 0;
 }
